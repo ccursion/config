@@ -3,6 +3,7 @@ set nocompatible
 "# Plugins
 call plug#begin('~/.vim/plugged')
 
+Plug 'tpope/vim-sensible'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-airline/vim-airline'
@@ -31,6 +32,7 @@ set number
 set wildmenu
 set modeline
 set modelineexpr
+set nowrap
 
 "# Folds
 set foldenable
