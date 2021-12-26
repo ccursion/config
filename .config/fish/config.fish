@@ -13,9 +13,11 @@ set fish_greeting
 # Alias "config" for managing the git repo comprising configuration files
 alias config='/usr/bin/git --git-dir=$HOME/.config.git/ --work-tree=$HOME'
 
-alias ls='ls --color'
+alias ls='ls --color=auto'
 set -x GREP_COLORS 'ms=01;31:mc=01;31:sl=:cx=:fn=34:ln=32:bn=32:se=36'
 
 set -x DISPLAY 'localhost:0'
+
+fish_vi_key_bindings
 
 umask 022
