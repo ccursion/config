@@ -4,15 +4,19 @@ set nocompatible
 call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'majutsushi/tagbar'
-Plug 'tpope/vim-surround'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'qpkorr/vim-bufkill'
 Plug 'dense-analysis/ale'
+Plug 'dracula/vim',{'as':'dracula'}
+Plug 'scrooloose/nerdtree'
+Plug 'valloric/youcompleteme'
 
 call plug#end()
 
@@ -53,6 +57,9 @@ set incsearch
 set hlsearch
 set showmatch
 set ignorecase
+
+"# Tags
+let g:easytags_file = '~/.vim/tags'
 
 "# Keybindings
 let mapleader=","
