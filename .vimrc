@@ -16,13 +16,15 @@ Plug 'qpkorr/vim-bufkill'
 Plug 'dense-analysis/ale'
 Plug 'dracula/vim',{'as':'dracula'}
 Plug 'scrooloose/nerdtree'
-Plug 'valloric/youcompleteme'
+"Plug 'valloric/youcompleteme'
+Plug 'andrewradev/bufferize.vim'
 
 call plug#end()
 
 "## Airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme = "dracula"
+let g:airline_powerline_fonts = 1
 
 "## EasyMotion
 let g:EasyMotion_do_mapping = 1
@@ -68,6 +70,7 @@ nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <space> za
 inoremap jk <esc>
 
+
 "## Window Navigation
 "let g:tmux_navigator_no_mappings = 1
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -80,6 +83,16 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 nnoremap <TAB> :bnext<CR>
 nnoremap <S-TAB> :bnext<CR>
 
+"# WSL yank support
+set clipboard+=unnamedplus
+"let s:clip = '/mnt/c/Windows/System32/clip.exe'
+"if executable(s:clip)
+"    augroup WSLYank
+"        autocmd!
+"        autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+"    augroup END
+"endif
+
 "# Color Scheme
 " Color scheme overriding highlighting
 set cursorline
@@ -88,6 +101,7 @@ augroup ColorOverride
         autocmd!
                 autocmd ColorScheme * highlight CursorColumn ctermbg=234
                         \ | hi CursorLine  ctermbg=234
+                        \ | hi Cursor  ctermfg=004
                         \ | hi debugPC  ctermbg=234
                         \ | hi Folded ctermbg=233
                         \ | hi LineNr ctermfg=004
