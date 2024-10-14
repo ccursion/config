@@ -49,7 +49,23 @@ set --global tide_right_prompt_items
 #set -U fish_cursor_insert line
 #set -U fish_cursor_visual line
 
-# Fix Names
+# Update docker compose images
+function docker_update
+    for f in $argv
+        if test -d $f
+            pushd $f
+            #docker compose down && docker compose pull && docker compose up -d --remove-orphans
+            echo update $f
+            popd
+        else
+            echo "$f is not a directory" 1>&2
+            return 1
+        end
+    end
+    docker system prune
+end
+
+# Fix Names in Media
 function fix_name
     for f in $argv
         set -l n (string replace -a '.' ' ' $f)
