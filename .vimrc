@@ -56,7 +56,7 @@ filetype indent on
 
 "# Search
 set incsearch
-set hlsearch
+set nohlsearch
 set showmatch
 set ignorecase
 
