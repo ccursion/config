@@ -51,18 +51,19 @@ set --global tide_right_prompt_items
 
 # Update docker compose images
 function docker_update
+    pushd ~/projects/services
     for f in $argv
         if test -d $f
             pushd $f
-            #docker compose down && docker compose pull && docker compose up -d --remove-orphans
-            echo update $f
+            docker compose down && docker compose pull && docker compose up -d --remove-orphans
             popd
         else
             echo "$f is not a directory" 1>&2
             return 1
         end
     end
-    docker system prune
+    popd
+    docker system prune -f
 end
 
 # Fix Names in Media
