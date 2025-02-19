@@ -1,1 +1,1 @@
-complete -c docker_update -a 'adguardhome  homeassistant  jellyfin  kavita  mosquitto  seq  syncthing  uptime-kuma  wud' -f
+complete -c docker_update -a '(ls ~/projects/services/ --color=never)' -f
