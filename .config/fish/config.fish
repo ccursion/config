@@ -1,3 +1,7 @@
+set -x LANG 'en_US.UTF-8'
+set -x LANGUAGE 'en_US'
+set -x LC_CTYPE 'en_US.UTF-8'
+
 # Start tmux for interactive shells if it's not already running
 if status is-interactive
 and not set -q TMUX
@@ -53,18 +57,33 @@ set -x SCREENDIR '/home/curtis/.screen'
 # Update docker compose images
 function docker_update
     pushd ~/projects/services
+
     for f in $argv
+        # find version label
+        set -l wud_data (mosquitto_sub -h 192.168.50.42 -p 1883 -i docker_update -C 1 -t "wud/container/local/$f")
+        set -l current (echo $wud_data | jq -r '.["image_tag_value"]')
         if test -d $f
             pushd $f
-            docker compose down && docker compose pull && docker compose up -d --remove-orphans
+            if [ "latest" != "$current" ]
+                set -l target (echo $wud_data | jq -r '.["result_tag"]')
+                echo "Updating $f version from $current to $target"
+                # update version in compose.yaml
+                sed -i -E "s/(image: .*):.*/\1:$target/" compose.yaml
+                # commit change in git
+                git add compose.yaml
+                git commit -m "version $f from $current to $target"
+            end
+            # pull new image and restart
+            docker compose pull && docker compose down && docker compose up -d --remove-orphans
             popd
         else
             echo "$f is not a directory" 1>&2
             return 1
         end
     end
+    git push origin main
     popd
-    docker system prune -f
+    docker system prune -f 
 end
 
 # Fix Names in Media
