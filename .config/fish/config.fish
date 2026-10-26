@@ -57,31 +57,50 @@ set -x SCREENDIR '/home/curtis/.screen'
 # Update docker compose images
 function docker_update
     pushd ~/projects/services
+    # set python venv for uptime kuma api
+    source .venv/bin/activate.fish
 
+    ansible-playbook --vault-password-file ansible-vault.txt ansible-maintenance-resume.yaml
     for f in $argv
         # find version label
         set -l wud_data (mosquitto_sub -h 192.168.50.42 -p 1883 -i docker_update -C 1 -t "wud/container/local/$f")
         set -l current (echo $wud_data | jq -r '.["image_tag_value"]')
         if test -d $f
+
             pushd $f
             if [ "latest" != "$current" ]
                 set -l target (echo $wud_data | jq -r '.["result_tag"]')
                 echo "Updating $f version from $current to $target"
                 # update version in compose.yaml
                 sed -i -E "s/(image: .*):.*/\1:$target/" compose.yaml
+                if test -f Dockerfile
+                    sed -i -E "s/(FROM [^:]*):$current/\1:$target/" Dockerfile
+                    git add Dockerfile
+                end
                 # commit change in git
                 git add compose.yaml
                 git commit -m "version $f from $current to $target"
             end
+
             # pull new image and restart
-            docker compose pull && docker compose down && docker compose up -d --remove-orphans
+            if test -f Dockerfile
+                docker compose pull && docker compose down && docker compose up --build -d --remove-orphans
+            else
+                docker compose pull && docker compose down && docker compose up -d --remove-orphans
+            end
             popd
+
         else
             echo "$f is not a directory" 1>&2
             return 1
         end
     end
     git push origin main
+    begin; sleep 60; ansible-playbook --vault-password-file ansible-vault.txt ansible-maintenance-pause.yaml; end &
+
+    # reset python venv
+    deactivate
+
     popd
     docker system prune -f 
 end
